@@ -1,11 +1,11 @@
 <template>
   <b-container class="home">
-    <b-row align-h="center" v-if="authenticated && profile != null && friendsCount != null">
+    <b-row align-h="center" v-if="authenticated && profile != null && friends != null">
       <b-col lg="3">
-        <Profile :photo="profile.photo_200" :count="friendsCount"/>
+        <Profile :profile="profile"/>
       </b-col>
-      <b-col lg="6">
-        <Search :accessToken="accessToken"/>
+      <b-col lg="4">
+        <FriendsList :friends="friends"/>
       </b-col>
     </b-row>
     <b-row align-h="center" v-else-if="error">
@@ -30,7 +30,7 @@
 import Login from '@/components/Login.vue';
 import Profile from '@/components/Profile.vue';
 import Loading from '@/components/Loading.vue';
-import Search from '@/components/Search.vue';
+import FriendsList from '@/components/FriendsList.vue';
 
 export default {
   name: 'Home',
@@ -38,7 +38,7 @@ export default {
     Login,
     Profile,
     Loading,
-    Search,
+    FriendsList,
   },
   methods: {
     async getProfile() {
@@ -57,15 +57,18 @@ export default {
           localStorage.removeItem('access_token');
         });
     },
-    async countFriends() {
+    async getFriends() {
       const API = process.env.VUE_APP_VK_API;
 
       this.$jsonp(`${API}/friends.get`, {
         access_token: this.accessToken,
+        order: 'random',
+        count: 5,
+        fields: 'first_name,last_name,photo_50',
         v: '5.103',
       })
         .then((res) => {
-          this.friendsCount = res.response.count;
+          this.friends = res.response.items;
         })
         .catch(() => {
           this.error = 'Error while loading friends list.';
@@ -78,7 +81,7 @@ export default {
       authenticated: false,
       accessToken: null,
       profile: null,
-      friendsCount: null,
+      friends: null,
       error: null,
     };
   },
@@ -92,7 +95,7 @@ export default {
 
     if (this.authenticated) {
       this.getProfile();
-      this.countFriends();
+      this.getFriends();
     }
   },
 };

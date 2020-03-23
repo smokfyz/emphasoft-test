@@ -1,7 +1,11 @@
 <template>
   <div class="profile">
-      <img :src="photo" alt="Avatar">
-      <p>You have <span class="font-weight-bold">{{ count }}</span> friends.</p>
+      <img :src="profile.photo_200" alt="Avatar">
+      <p>
+        <span class="font-weight-bold">
+          {{ this.profile.first_name }} {{ this.profile.last_name }}
+        </span>
+      </p>
       <Logout/>
   </div>
 </template>
@@ -15,10 +19,7 @@ export default {
     Logout,
   },
   props: {
-    photo: String,
-    count: Number,
-  },
-  methods: {
+    profile: Object,
   },
 };
 </script>

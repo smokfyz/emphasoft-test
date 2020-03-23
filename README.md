@@ -1,4 +1,4 @@
-# semrush-test
+# emphasoft-test
 
 ## Project setup
 ```
